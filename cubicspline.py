@@ -31,7 +31,6 @@ xfast=np.asarray([0,h,2*h,3*h,4*h,5*h,6*h,7*h])
 
 
 yfast = np.genfromtxt("./data/y_values.txt", delimiter=";", skip_header=2, usecols=1)
-print(yfast)
 
 
 #Et vilkaarlig eksempel:
@@ -74,7 +73,7 @@ def vy(y, c, g):
 
 def k(dy, d2y):
   new_list = []
-
+  
   for i in range(len(dy)):
     k_t = d2y[i] / (1 + (dy[i]**2))**(3/2)
     new_list.append(k_t)
@@ -136,9 +135,13 @@ def t_n(time_step):
     new_elem = tail + time_step[i]
     new_list.append(new_elem)
     tail = new_elem
-  
   return new_list
 
+def velocity_dt(dt, dx):
+  new_list = []
+  for elem in dt:
+    new_list.append(dx/elem)
+  return new_list
 
 velocity = vy(y, c, g)
 curvature = k(dy, d2y)
@@ -147,20 +150,19 @@ inclination = beta(dy)
 normal_f = normal_force(m, g, inclination, centripetal)
 friction = f(c, m, g, inclination)
 rel_n_f = rel_friction_normal_f(friction, normal_f)
-# time_step shouldn't be plotted
-t_step = delta_t(velocity, dx, inclination)
+t_step = delta_t(velocity, dx, inclination) # t_step shouldn't be plotted
 t = t_n(t_step)
-dt = cs(t,1)
+v_dt = velocity_dt(t_step, dx)
 
 
 #Plotteeksempel: Banens form y(x)
 baneform = plt.figure('y(x)',figsize=(12,6))
-plt.plot(x[1:], dt, xfast, yfast,'*')
+plt.plot(x[1:], v_dt, xfast, yfast,'*')
 plt.plot(x, velocity, xfast, yfast,'*')
 plt.title('Banens form')
 plt.xlabel('$x$ (m)',fontsize=20)
 plt.ylabel('$y(x)$ (m)',fontsize=20)
-plt.ylim(-1.5,1.5)
+plt.ylim(-1,2.5)
 plt.grid()
 plt.show()
 #Figurer kan lagres i det formatet du foretrekker:
