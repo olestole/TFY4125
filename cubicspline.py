@@ -19,6 +19,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.interpolate import CubicSpline
 
+# CONSTANTS
+g = 9.81
+c = 2/5
+m = 0.031
+
 #Horisontal avstand mellom festepunktene er 0.200 m
 h = 0.200
 xfast=np.asarray([0,h,2*h,3*h,4*h,5*h,6*h,7*h])
@@ -56,13 +61,62 @@ y = cs(x)       #y=tabell med 1401 verdier for y(x)
 dy = cs(x,1)    #dy=tabell med 1401 verdier for y'(x)
 d2y = cs(x,2)   #d2y=tabell med 1401 verdier for y''(x)
 
+
+def vy(y, c, g):
+  new_list = []
+  y0 = y[0]
+
+  for elem in y:
+    vy_t = np.sqrt((2*g*(y0 - elem)) / (1 + c))
+    new_list.append(vy_t)
+  return new_list
+
+velocity = vy(y, c, g)
+
+
+def k(dy, d2y):
+  new_list = []
+
+  for i in range(len(dy)):
+    k_t = d2y[i] / (1 + (dy[i]**2))**(3/2)
+    new_list.append(k_t)
+  return new_list
+
+
+def a(v, k):
+  v_squared = [x**2 for x in v]
+  v_np = np.array(v_squared)
+  k_np = np.array(k)
+  new_array = np.multiply(v_np, k_np).tolist()
+  return new_array
+
+def beta(dy):
+  new_list = []
+  for elem in dy:
+    new_list.append(np.arctan(elem))
+  return new_list
+
+def normal_force(m, g, beta, centr_f):
+  new_list = []
+  for i in range(len(beta)):
+    new_list.append(m*(g*np.cos(beta[i]) + centr_f[i]))
+  return new_list
+
+
+velocity = vy(y, c, g)
+curvature = k(dy, d2y)
+centripetal = a(velocity, curvature)
+inclination = beta(dy)
+normal_f = normal_force(m, g, inclination, centripetal)
+
 #Plotteeksempel: Banens form y(x)
 baneform = plt.figure('y(x)',figsize=(12,6))
-plt.plot(x,y,xfast,yfast,'*')
+plt.plot(x, normal_f, xfast, yfast,'*')
+plt.plot(x, curvature, xfast, yfast,'*')
 plt.title('Banens form')
 plt.xlabel('$x$ (m)',fontsize=20)
 plt.ylabel('$y(x)$ (m)',fontsize=20)
-plt.ylim(0.0,0.4)
+plt.ylim(-1.0,1.0)
 plt.grid()
 plt.show()
 #Figurer kan lagres i det formatet du foretrekker:
