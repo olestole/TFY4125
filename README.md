@@ -9,7 +9,7 @@
 ### In code_handout folder:
 
 On macOS and Linux:
-`python3 -m venv env`
+`python -m venv env`
 
 On Windows:
 `python -m venv env`
@@ -33,4 +33,4 @@ Leaving the virtual environment:
 `deactivate`
 
 ## To run the task
-`data_analysis task3.py`
+`python data_analysis.py`
