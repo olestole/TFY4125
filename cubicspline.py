@@ -23,8 +23,14 @@ from scipy.interpolate import CubicSpline
 h = 0.200
 xfast=np.asarray([0,h,2*h,3*h,4*h,5*h,6*h,7*h])
 #Skriv inn y-verdiene til banens 8 festepunkter i tabellen yfast.
+
+
+yfast = np.genfromtxt("./data/y_values.txt", delimiter=";", skip_header=2, usecols=1)
+print(yfast)
+
+
 #Et vilkaarlig eksempel:
-yfast = np.asarray([0.350,0.315,0.299,0.306,0.281,0.236,0.168,0.200])
+
 #Erstatt med egne tallverdier avlest i tracker.
 #Programmet beregner de 7 tredjegradspolynomene, et
 #for hvert intervall mellom to festepunkter,
@@ -56,7 +62,7 @@ plt.plot(x,y,xfast,yfast,'*')
 plt.title('Banens form')
 plt.xlabel('$x$ (m)',fontsize=20)
 plt.ylabel('$y(x)$ (m)',fontsize=20)
-plt.ylim(0.10,0.40)
+plt.ylim(0.0,0.4)
 plt.grid()
 plt.show()
 #Figurer kan lagres i det formatet du foretrekker:
