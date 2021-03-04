@@ -71,8 +71,6 @@ def vy(y, c, g):
     new_list.append(vy_t)
   return new_list
 
-velocity = vy(y, c, g)
-
 
 def k(dy, d2y):
   new_list = []
@@ -102,21 +100,67 @@ def normal_force(m, g, beta, centr_f):
     new_list.append(m*(g*np.cos(beta[i]) + centr_f[i]))
   return new_list
 
+def f(c, m, g, beta):
+  new_list = []
+  for i in range(len(beta)):
+    element = (c * m * g * np.sin(beta[i]))/(1 + c)
+    new_list.append(element)
+  return new_list
+
+def rel_friction_normal_f(f, normal_f):
+  new_list = []
+  for i in range(len(f)):
+    new_list.append(np.abs(f[i] / normal_f[i]))
+  return new_list
+
+def delta_t(v, delta_x, beta):
+  v_step = []
+  tail = v[0] * np.cos(beta[0])
+
+  for i in range(1, len(v)):
+    v_x_n = v[i] * np.cos(beta[i])
+    v_step.append(0.5*(tail + v_x_n))
+    tail = v_x_n
+  
+  new_list = []
+  for elem in v_step:
+    new_list.append(delta_x / elem)
+  return new_list
+
+def t_n(time_step):
+  new_list = []
+  tail = time_step[0]
+  new_list.append(tail)
+
+  for i in range(1, len(time_step)):
+    new_elem = tail + time_step[i]
+    new_list.append(new_elem)
+    tail = new_elem
+  
+  return new_list
+
 
 velocity = vy(y, c, g)
 curvature = k(dy, d2y)
 centripetal = a(velocity, curvature)
 inclination = beta(dy)
 normal_f = normal_force(m, g, inclination, centripetal)
+friction = f(c, m, g, inclination)
+rel_n_f = rel_friction_normal_f(friction, normal_f)
+# time_step shouldn't be plotted
+t_step = delta_t(velocity, dx, inclination)
+t = t_n(t_step)
+dt = cs(t,1)
+
 
 #Plotteeksempel: Banens form y(x)
 baneform = plt.figure('y(x)',figsize=(12,6))
-plt.plot(x, normal_f, xfast, yfast,'*')
-plt.plot(x, curvature, xfast, yfast,'*')
+plt.plot(x[1:], dt, xfast, yfast,'*')
+plt.plot(x, velocity, xfast, yfast,'*')
 plt.title('Banens form')
 plt.xlabel('$x$ (m)',fontsize=20)
 plt.ylabel('$y(x)$ (m)',fontsize=20)
-plt.ylim(-1.0,1.0)
+plt.ylim(-1.5,1.5)
 plt.grid()
 plt.show()
 #Figurer kan lagres i det formatet du foretrekker:
