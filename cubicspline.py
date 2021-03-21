@@ -31,6 +31,9 @@ xfast=np.asarray([0,h,2*h,3*h,4*h,5*h,6*h,7*h])
 
 
 yfast = np.genfromtxt("./data/y_values.txt", delimiter=";", skip_header=2, usecols=1)
+experimental_data_x = np.genfromtxt("./data/3_data.txt", delimiter=";", skip_header=2, usecols=1)
+experimental_data_v = np.genfromtxt("./data/3_data.txt", delimiter=";", skip_header=2, usecols=3)
+
 
 
 #Et vilkaarlig eksempel:
@@ -143,6 +146,59 @@ def velocity_dt(dt, dx):
     new_list.append(dx/elem)
   return new_list
 
+
+def std_deviation():
+  v1 = np.genfromtxt("./data/1_data.txt", delimiter=";", skip_header=2, usecols=5)
+  v2 = np.genfromtxt("./data/2_data.txt", delimiter=";", skip_header=2, usecols=5)
+  v3 = np.genfromtxt("./data/3_data.txt", delimiter=";", skip_header=2, usecols=3)
+  v4 = np.genfromtxt("./data/4_data.txt", delimiter=";", skip_header=2, usecols=5)
+  v5 = np.genfromtxt("./data/5_data.txt", delimiter=";", skip_header=2, usecols=5)
+  v5_redone = np.genfromtxt("./data/5_data_redone.txt", delimiter=";", skip_header=2, usecols=5)
+  v6 = np.genfromtxt("./data/6_data.txt", delimiter=";", skip_header=2, usecols=5)
+  v7 = np.genfromtxt("./data/7_data.txt", delimiter=";", skip_header=2, usecols=5)
+  v8 = np.genfromtxt("./data/8_data.txt", delimiter=";", skip_header=2, usecols=5)
+  v9 = np.genfromtxt("./data/9_data.txt", delimiter=";", skip_header=2, usecols=5)
+  v10 = np.genfromtxt("./data/10_data.txt", delimiter=";", skip_header=2, usecols=5)
+
+  a = [v1[-2], v2[-2], v3[-2], v4[-2], v5[-2], v6[-2], v7[-2], v8[-2], v9[-2], v10[-2]]
+  print(a)
+
+  std_a = np.std(a)
+  avg_a = np.average(a)
+  print(f"Standard deviation of v: {std_a}")
+  print(f"Average of v: {avg_a}")
+  print(f"Standardfeil: {std_a / np.sqrt(10)}")
+
+  print(min(a), max(a))
+
+  plt.plot(experimental_data_x[0:34], v1[0:34])
+  plt.plot(experimental_data_x[0:34], v2[0:34])
+  plt.plot(experimental_data_x[0:34], v3[0:34])
+  plt.plot(experimental_data_x[0:34], v4[0:34])
+  plt.plot(experimental_data_x[0:34], v5[0:34])
+  plt.plot(experimental_data_x[0:34], v6[0:34])
+  plt.plot(experimental_data_x[0:34], v7[0:34])
+  plt.plot(experimental_data_x[0:34], v8[0:34])
+  plt.plot(experimental_data_x[0:34], v9[0:34])
+  plt.plot(experimental_data_x[0:34], v10[0:34])
+
+  plt.title('Kulas hastighet')
+  plt.xlabel('$x$ (m)',fontsize=20)
+  plt.ylabel('$v$ (m/s)',fontsize=20)
+
+  plt.legend(['Originalt eksperiment', "Etterprøvd eksperiment"])
+
+  plt.ylim(0,2.5)
+  plt.grid()
+  plt.show()
+
+  
+
+
+
+std_deviation()
+
+
 velocity = vy(y, c, g)
 curvature = k(dy, d2y)
 centripetal = a(velocity, curvature)
@@ -157,14 +213,22 @@ v_dt = velocity_dt(t_step, dx)
 
 #Plotteeksempel: Banens form y(x)
 baneform = plt.figure('y(x)',figsize=(12,6))
-plt.plot(x[1:], v_dt, xfast, yfast,'*')
-plt.plot(x, velocity, xfast, yfast,'*')
-plt.title('Banens form')
+# plt.plot(x, velocity, xfast, yfast,'*')
+# plt.plot(x[1:], v_dt, xfast, yfast,'*')
+
+plt.plot(x[1:], v_dt, color='blue',)
+# plt.plot(x, velocity, color='blue',)
+plt.plot(experimental_data_x, experimental_data_v, color='orange')
+
+plt.title('Kulas hastighet')
 plt.xlabel('$x$ (m)',fontsize=20)
-plt.ylabel('$y(x)$ (m)',fontsize=20)
-plt.ylim(-1,2.5)
+plt.ylabel('$v$ (m/s)',fontsize=20)
+
+plt.legend(['Numerisk data', "Eksperimentell data"])
+
+plt.ylim(0,2.5)
 plt.grid()
-plt.show()
+# plt.show()
 #Figurer kan lagres i det formatet du foretrekker:
 #baneform.savefig("baneform.pdf", bbox_inches='tight')
 #baneform.savefig("baneform.png", bbox_inches='tight')
