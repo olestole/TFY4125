@@ -31,6 +31,8 @@ xfast=np.asarray([0,h,2*h,3*h,4*h,5*h,6*h,7*h])
 
 
 yfast = np.genfromtxt("./data/y_values.txt", delimiter=";", skip_header=2, usecols=1)
+experimental_data_x = np.genfromtxt("./data/3_data.txt", delimiter=";", skip_header=2, usecols=1)
+experimental_data_v = np.genfromtxt("./data/3_data.txt", delimiter=";", skip_header=2, usecols=5)
 
 
 #Et vilkaarlig eksempel:
@@ -157,12 +159,13 @@ v_dt = velocity_dt(t_step, dx)
 
 #Plotteeksempel: Banens form y(x)
 baneform = plt.figure('y(x)',figsize=(12,6))
-plt.plot(x[1:], v_dt, xfast, yfast,'*')
-plt.plot(x, velocity, xfast, yfast,'*')
-plt.title('Banens form')
+plt.plot(x, rel_n_f)
+# plt.plot(x, velocity)
+# plt.plot(experimental_data_x, experimental_data_v, color='orange')
+
+# plt.title('Banens form')
 plt.xlabel('$x$ (m)',fontsize=20)
-plt.ylabel('$y(x)$ (m)',fontsize=20)
-plt.ylim(-1,2.5)
+plt.ylabel('$|f/N|$',fontsize=20)
 plt.grid()
 plt.show()
 #Figurer kan lagres i det formatet du foretrekker:
